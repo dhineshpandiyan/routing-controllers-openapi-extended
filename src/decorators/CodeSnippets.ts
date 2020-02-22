@@ -1,8 +1,8 @@
 import { getStorage } from "../storage";
-import { CodeSnippet } from "../decorator-options";
+import { CodeSnippetOptions } from "../decorator-options";
 
-export function CodeSnippets(options: Array<CodeSnippet>): Function {
+export function CodeSnippets(options: Array<CodeSnippetOptions>): Function {
     return function (object: Object, method: string) {
-        getStorage().customEntry.push({ target: object.constructor, method, options });
+        getStorage().codeSnippets.push({ target: object.constructor, method, options });
     };
 }

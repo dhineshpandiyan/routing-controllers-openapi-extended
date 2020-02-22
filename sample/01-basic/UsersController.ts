@@ -8,7 +8,7 @@ import {
   Put
 } from 'routing-controllers'
 // import { OpenAPI } from 'routing-controllers-openapi';
-import { PathEntry, CustomEntry } from 'routing-controllers-openapi-extended';
+import { PathEntry, CustomEntry, CodeSnippets } from 'routing-controllers-openapi-extended';
 
 class CreateUserBody {
   @IsString()
@@ -25,6 +25,9 @@ export class UsersController {
   @Get('/:id')
   @PathEntry({ summary: 'Path entry summary', description: 'Path entry description' })
   @CustomEntry({ a: 'one', b: 'two' })
+  @CodeSnippets([{ lang: 'java', snippet: 'Java code'}, { lang: 'node', snippet: 'Node code'}])
+  @CodeSnippets([{ lang: 'c#', snippet: 'C# code'}])
+  @CodeSnippets([])
   getOne(@Param('id') id: number) {
     return { name: 'User #' + id }
   }

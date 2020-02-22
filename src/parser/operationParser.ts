@@ -5,7 +5,7 @@ import { getHeaderParams, getPathParams, getQueryParams } from './parameterParse
 import { getRequestBody } from './requestBodyParser';
 import { getResponses } from './responseParser';
 import { getTags } from './tagsParser';
-import { pathEntryParser } from './pathEntryParser';
+import { decoratorParser } from './decoratorParser';
 
 function getOperationId(route: Route): string {
     return `${route.action.target.name}.${route.action.method}`;
@@ -28,7 +28,7 @@ export function getOperation(route: Route): oa.OperationObject {
       summary: getSummary(route),
       tags: getTags(route)
     };
-    const operationObj: oa.OperationObject = pathEntryParser(route);
+    const operationObj = decoratorParser(route);
     const mergedOperationObj = _.merge(operation, operationObj)
   
     return _.omitBy(mergedOperationObj, _.isEmpty) as oa.OperationObject;

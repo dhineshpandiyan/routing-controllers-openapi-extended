@@ -6,4 +6,4 @@ export * from './requestBodyParser';
 export * from './responseParser';
 export * from './routeParser';
 export * from './tagsParser';
-export * from './pathEntryParser';
+export * from './decoratorParser';
