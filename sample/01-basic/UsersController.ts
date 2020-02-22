@@ -7,7 +7,8 @@ import {
   Post,
   Put
 } from 'routing-controllers'
-import { OpenAPI } from 'routing-controllers-openapi'
+// import { OpenAPI } from 'routing-controllers-openapi';
+import { PathEntry, CustomEntry } from 'routing-controllers-openapi-extended';
 
 class CreateUserBody {
   @IsString()
@@ -18,34 +19,23 @@ class CreateUserBody {
   hobbies: string[]
 }
 
-@OpenAPI({
-  security: [{ basicAuth: [] }]
-})
 @JsonController('/users')
 export class UsersController {
-  @Get('/')
-  @OpenAPI({ summary: 'Return a list of users' })
-  getAll() {
-    return [
-      { id: 1, name: 'First user!', hobbies: [] },
-      { id: 2, name: 'Second user!', hobbies: ['fishing', 'cycling'] }
-    ]
-  }
 
   @Get('/:id')
-  @OpenAPI({ summary: 'Return a single user' })
+  @PathEntry({ summary: 'foo', description: 'foo' })
+  @CustomEntry({ a: 'one', b: 'two' })
   getOne(@Param('id') id: number) {
     return { name: 'User #' + id }
   }
 
-  @Post('/')
-  @OpenAPI({ summary: 'Create a new user' })
-  createUser(@Body({ validate: true }) body: CreateUserBody) {
-    return { ...body, id: 3 }
-  }
+  // @Post('/')
+  // createUser(@Body({ validate: true }) body: CreateUserBody) {
+  //   return { ...body, id: 3 }
+  // }
 
-  @Put('/')
-  createManyUsers(@Body({ type: CreateUserBody }) body: CreateUserBody[]) {
-    return {}
-  }
+  // @Put('/')
+  // createManyUsers(@Body({ type: CreateUserBody }) body: CreateUserBody[]) {
+  //   return {}
+  // }
 }
