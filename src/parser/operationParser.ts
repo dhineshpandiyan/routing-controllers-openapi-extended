@@ -5,6 +5,7 @@ import { getHeaderParams, getPathParams, getQueryParams } from './parameterParse
 import { getRequestBody } from './requestBodyParser';
 import { getResponses } from './responseParser';
 import { getTags } from './tagsParser';
+import { pathEntryParser } from './pathEntryParser';
 
 function getOperationId(route: Route): string {
     return `${route.action.target.name}.${route.action.method}`;
@@ -12,7 +13,7 @@ function getOperationId(route: Route): string {
 
 function getSummary(route: Route): string {
     return _.capitalize(_.startCase(route.action.method))
-  }
+}
 
 export function getOperation(route: Route): oa.OperationObject {
     const operation: oa.OperationObject = {
@@ -27,7 +28,8 @@ export function getOperation(route: Route): oa.OperationObject {
       summary: getSummary(route),
       tags: getTags(route)
     };
+    const operationObj: oa.OperationObject = pathEntryParser(route);
+    const mergedOperationObj = _.merge(operation, operationObj)
   
-    return _.omitBy(operation, _.isEmpty) as oa.OperationObject;
-    // return applyOpenAPIDecorator(cleanedOperation, route)
+    return _.omitBy(mergedOperationObj, _.isEmpty) as oa.OperationObject;
 }

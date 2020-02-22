@@ -1,4 +1,3 @@
-export * from './parseMetadata'
 export * from './decorators';
 export * from './decorator-options';
 export * from './storage/types';

@@ -23,7 +23,7 @@ class CreateUserBody {
 export class UsersController {
 
   @Get('/:id')
-  @PathEntry({ summary: 'foo', description: 'foo' })
+  @PathEntry({ summary: 'Path entry summary', description: 'Path entry description' })
   @CustomEntry({ a: 'one', b: 'two' })
   getOne(@Param('id') id: number) {
     return { name: 'User #' + id }
