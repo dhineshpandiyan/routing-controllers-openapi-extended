@@ -3,15 +3,15 @@ import * as oa from 'openapi3-ts';
 import { Route } from './types';
 import { getStorage } from '../storage';
 
-function pathEntryParser(target: Function, method: string): oa.OperationObject {
-    const pathEntries = getStorage().filterPathEntityByTarget(target, method);
+function operationInfoParser(target: Function, method: string): oa.OperationObject {
+    const operationInfos = getStorage().filterOperationInfoByTarget(target, method);
 
     // @ts-ignore: array spread
-    return _.merge(...pathEntries) as oa.OperationObject;
+    return _.merge(...operationInfos) as oa.OperationObject;
 }
 
-function customEntityParser(target: Function, method: string): any {
-    const customProperties = getStorage().filterCustomEntityByTarget(target, method);
+function customEntryParser(target: Function, method: string): any {
+    const customProperties = getStorage().filterCustomEntryByTarget(target, method);
 
     // @ts-ignore: array spread
     return _.merge(...customProperties);
@@ -26,11 +26,16 @@ function codeSnippetParser(target: Function, method: string): any {
     }, {} as { [key: string]: string });
 }
 
+function getTags(target: Function, method: string): string[] {
+    return getStorage().filterTagsByTarget(target, method);
+}
+
 export function decoratorParser(route: Route): any {
     const { target, method } = route.action;
-    const pathProperties = pathEntryParser(target, method);
-    const customProperties = customEntityParser(target, method);
+    const operationInfoProperties = operationInfoParser(target, method);
+    const customProperties = customEntryParser(target, method);
     const codeSnippets = codeSnippetParser(target, method);
+    const tags = getTags(target, method);
 
-    return _.merge(pathProperties, customProperties, codeSnippets);
+    return _.merge(operationInfoProperties, customProperties, codeSnippets, tags);
 }

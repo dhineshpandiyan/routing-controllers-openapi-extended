@@ -1,3 +1,3 @@
-export * from './PathEntry';
+export * from './OperationInfo';
 export * from './CustomEntry';
 export * from './CodeSnippets';

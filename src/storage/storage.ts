@@ -1,19 +1,20 @@
-import { CustomEntryArgs, PathEntryArgs, CodeSnippetsArgs } from '../storage';
-import { PathEntryOptions, CustomEntryOptions, CodeSnippetOptions } from '../decorator-options';
+import { CustomEntryArgs, PathEntryArgs, CodeSnippetsArgs, TagsArgs } from '../storage';
+import { OperationInfoOptions, CustomEntryOptions, CodeSnippetOptions } from '../decorator-options';
 
 export class Storage {
 
-    pathEntry: PathEntryArgs[] = [];
+    operationInfo: PathEntryArgs[] = [];
     customEntry: CustomEntryArgs[] = [];
     codeSnippets: CodeSnippetsArgs[] = [];
+    tags: TagsArgs[] = [];
 
-    filterPathEntityByTarget(target: Function, method: string): Array<PathEntryOptions> {
-        return this.pathEntry
+    filterOperationInfoByTarget(target: Function, method: string): Array<OperationInfoOptions> {
+        return this.operationInfo
             .filter((entry) => entry.target === target && entry.method === method)
             .map((entry) => entry.options);
     }
 
-    filterCustomEntityByTarget(target: Function, method: string): Array<CustomEntryOptions> {
+    filterCustomEntryByTarget(target: Function, method: string): Array<CustomEntryOptions> {
         return this.customEntry
             .filter((entry) => entry.target === target && entry.method === method)
             .map((entry) => entry.options);
@@ -26,5 +27,14 @@ export class Storage {
                 acc.push(...entry.options);
                 return acc;
             }, [] as CodeSnippetOptions[]);
+    }
+
+    filterTagsByTarget(target: Function, method: string): Array<string> {
+        return this.tags
+            .filter((entry) => entry.target === target && entry.method === method)
+            .reduce((acc, entry) => {
+                acc.push(...entry.options);
+                return acc;
+            }, [] as string[]);
     }
 }
