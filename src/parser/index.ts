@@ -7,3 +7,4 @@ export * from './responseParser';
 export * from './routeParser';
 export * from './tagsParser';
 export * from './decoratorParser';
+export * from './schemaParser';

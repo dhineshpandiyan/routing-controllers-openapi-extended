@@ -1,6 +1,5 @@
 import 'reflect-metadata'
 import { getFromContainer, MetadataStorage } from 'class-validator' // tslint:disable-line
-import { validationMetadatasToSchemas } from 'class-validator-jsonschema'
 import { Express } from 'express'
 import {
   createExpressServer,
@@ -16,17 +15,10 @@ const routingControllersOptions = {
 }
 const app: Express = createExpressServer(routingControllersOptions)
 
-// Parse class-validator classes into JSON Schema:
 const metadatas = (getFromContainer(MetadataStorage) as any).validationMetadatas
-const schemas = validationMetadatasToSchemas(metadatas, {
-  refPointerPrefix: '#/components/schemas/'
-})
-
-// Parse routing-controllers classes into OpenAPI spec:
 const storage = getMetadataArgsStorage()
-const spec = generateSwagger(storage, routingControllersOptions, {
+const spec = generateSwagger(storage, routingControllersOptions, metadatas, {
   components: {
-    schemas,
     securitySchemes: {
       basicAuth: {
         scheme: 'basic',

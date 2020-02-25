@@ -1,9 +1,9 @@
-import { CustomEntryArgs, PathEntryArgs, CodeSnippetsArgs, TagsArgs } from '../storage';
+import { CustomEntryArgs, OperationInfoArgs, CodeSnippetsArgs, TagsArgs } from '../storage';
 import { OperationInfoOptions, CustomEntryOptions, CodeSnippetOptions } from '../decorator-options';
 
 export class Storage {
 
-    operationInfo: PathEntryArgs[] = [];
+    operationInfo: OperationInfoArgs[] = [];
     customEntry: CustomEntryArgs[] = [];
     codeSnippets: CodeSnippetsArgs[] = [];
     tags: TagsArgs[] = [];

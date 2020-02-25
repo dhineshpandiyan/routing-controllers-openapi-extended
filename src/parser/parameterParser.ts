@@ -13,12 +13,12 @@ export function getParamSchema(param: ParamMetadataArgs): oa.SchemaObject | oa.R
     const type = Reflect.getMetadata('design:paramtypes', object, method)[index]
     if (_.isFunction(type) && type.name === 'Array') {
       const items = explicitType
-        ? { $ref: '#/components/schemas/' + explicitType.name }
+        ? { $ref: '#/definitions/' + explicitType.name }
         : { type: 'object' }
       return { items, type: 'array' }
     }
     if (explicitType) {
-      return { $ref: '#/components/schemas/' + explicitType.name }
+      return { $ref: '#/definitions/' + explicitType.name }
     }
     if (_.isFunction(type)) {
       if (_.isString(type.prototype) || _.isSymbol(type.prototype)) {
@@ -28,7 +28,7 @@ export function getParamSchema(param: ParamMetadataArgs): oa.SchemaObject | oa.R
       } else if (_.isBoolean(type.prototype)) {
         return { type: 'boolean' }
       } else if (type.name !== 'Object') {
-        return { $ref: '#/components/schemas/' + type.name }
+        return { $ref: '#/definitions/' + type.name }
       }
     }
   

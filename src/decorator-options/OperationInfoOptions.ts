@@ -4,5 +4,5 @@ export interface OperationInfoOptions {
     operationId?: string;
     consumes?: Array<string>;
     produces?: Array<string>;
-    security: any;
+    security?: any;
 }
