@@ -2,7 +2,7 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "target": "es6",
-    "outDir": "build",
+    "outDir": "dist",
     "rootDir": "src",
     "removeComments": true,
     "declaration": true

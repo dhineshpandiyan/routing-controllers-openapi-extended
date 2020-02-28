@@ -1,5 +1,6 @@
 npm-debug*
 build
+dist
 node_modules
 coverage
 .vscode/
