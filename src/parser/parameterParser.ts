@@ -54,7 +54,7 @@ export function getParamSchema(param: ParamMetadataArgs): oa.SchemaObject | oa.R
 }
 
 export function getHeaderParams(route: Route): oa.ParameterObject[] {
-  const headers: oa.ParameterObject[] = route.params.filter(p => p.type === 'header')
+  const headers: any[] = route.params.filter(p => p.type === 'header')
     .map(headerMeta => {
       const headerParam = {
         in: 'header',
@@ -132,4 +132,44 @@ export function getQueryParams(route: Route): oa.ParameterObject[] {
   }
 
   return queries
+}
+
+export function getBodyParams(route: Route): oa.ParameterObject[] {
+  return route.params.filter(p => p.type === 'body')
+    .map(queryMeta => {
+      const schema = getParamSchema(queryMeta) as oa.SchemaObject
+      const bodyParams: any = {
+        in: 'body',
+        name: queryMeta.name || queryMeta.type,
+        required: isRequired(queryMeta, route),
+        schema,
+      };
+      const customParameter = getCustomParametersByName(route, bodyParams.name);
+
+      if (!schema.$ref) {
+        bodyParams.type = schema.type;
+        delete bodyParams.schema;
+      }
+      
+      return _.merge(bodyParams, customParameter);
+    });
+}
+
+export function getParameters(route: Route): oa.ParameterObject[] {
+  const parameters: oa.ParameterObject[] = [
+    ...getHeaderParams(route),
+    ...getPathParams(route),
+    ...getQueryParams(route),
+    ...getBodyParams(route),
+  ];
+  const parametersSet = new Set(parameters.map((p) => p.name));
+  const customParameters: ParametersOptions[] = getCustomParameters(route);
+
+  customParameters.forEach((customParam) => {
+    if (!parametersSet.has(customParam.name)) {
+      parameters.push(customParam as oa.ParameterObject);
+    }
+  });
+
+  return parameters;
 }

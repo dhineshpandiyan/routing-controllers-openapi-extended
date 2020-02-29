@@ -1,5 +1,5 @@
-import { CustomEntryArgs, OperationInfoArgs, CodeSnippetsArgs, TagsArgs, ParametersArgs } from '../storage';
-import { OperationInfoOptions, CustomEntryOptions, CodeSnippetOptions, ParametersOptions } from '../decorator-options';
+import { CustomEntryArgs, OperationInfoArgs, CodeSnippetsArgs, TagsArgs, ParametersArgs, ResponseEntryArgs } from '../storage';
+import { OperationInfoOptions, CustomEntryOptions, CodeSnippetOptions, ParametersOptions, ResponseEntryOptions } from '../decorator-options';
 
 export class Storage {
 
@@ -8,6 +8,7 @@ export class Storage {
     codeSnippets: CodeSnippetsArgs[] = [];
     tags: TagsArgs[] = [];
     parameters: ParametersArgs[] = [];
+    responseEntries: ResponseEntryArgs[] = [];
 
     filterOperationInfoByTarget(target: Function, method: string): Array<OperationInfoOptions> {
         return this.operationInfo
@@ -46,5 +47,14 @@ export class Storage {
                 acc.push(...entry.options);
                 return acc;
             }, [] as ParametersOptions[]);
+    }
+
+    filterResponseEntriesByTarget(target: Function, method: string): Array<ResponseEntryOptions> {
+        return this.responseEntries
+            .filter((entry) => entry.target === target && entry.method === method)
+            .reduce((acc, entry) => {
+                acc.push(entry.options);
+                return acc;
+            }, [] as ResponseEntryOptions[]);
     }
 }

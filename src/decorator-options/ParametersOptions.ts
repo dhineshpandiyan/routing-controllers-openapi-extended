@@ -1,6 +1,6 @@
 export interface ParametersOptions {
     name: string;
-    in?: 'query' | 'header' | 'path' | 'cookie';
+    in?: 'query' | 'header' | 'path' | 'body' | 'cookie';
     description?: string;
     type?: string;
     required?: boolean;

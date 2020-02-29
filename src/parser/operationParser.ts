@@ -1,8 +1,7 @@
 import * as _ from 'lodash'
 import * as oa from 'openapi3-ts';
 import { Route } from './types';
-import { getHeaderParams, getPathParams, getQueryParams } from './parameterParser';
-import { getRequestBody } from './requestBodyParser';
+import { getParameters } from './parameterParser';
 import { getResponses } from './responseParser';
 import { getTags } from './tagsParser';
 import { decoratorParser } from './decoratorParser';
@@ -18,15 +17,10 @@ function getSummary(route: Route): string {
 export function getOperation(route: Route): oa.OperationObject {
     const operation: oa.OperationObject = {
       operationId: getOperationId(route),
-      parameters: [
-        ...getHeaderParams(route),
-        ...getPathParams(route),
-        ...getQueryParams(route)
-      ],
-      requestBody: getRequestBody(route) || undefined,
-      responses: getResponses(route),
       summary: getSummary(route),
-      tags: getTags(route)
+      tags: getTags(route),
+      parameters: getParameters(route),
+      responses: getResponses(route),
     };
     const operationObj = decoratorParser(route);
     const mergedOperationObj = _.merge(operation, operationObj)

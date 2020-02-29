@@ -15,12 +15,23 @@ Swagger v2 and OpenAPI v3 schema generation using beautiful typescript decorator
 - [Available Decorators](#available-decorators)
   - [@OperationInfo(options)](#operationinfooptions)
     - [@Available Options](#available-options)
+    - [@Syntax](#syntax)
     - [@Example](#example)
   - [@CustomEntry(options)](#customentryoptions)
     - [@Available Options](#available-options)
+    - [@Syntax](#syntax)
     - [@Example](#example)
   - [@CodeSnippets(options)](#codesnippetsoptions)
     - [@Available Options](#available-options)
+    - [@Syntax](#syntax)
+    - [@Example](#example)
+  - [@Parameters(options)](#parametersoptions)
+    - [@Available Options](#available-options)
+    - [@Syntax](#syntax)
+    - [@Example](#example)
+  - [@ResponseEntry(options)](#responseentryoptions)
+    - [@Available Options](#available-options)
+    - [@Syntax](#syntax)
     - [@Example](#example)
 - [Next goals](#next-goals)
 - [References](#references)
@@ -39,7 +50,7 @@ This node module will extract much information about operations, parameters, res
 ```typescript
 import { IsOptional, IsString, MaxLength } from 'class-validator'
 import { Body, Get, JsonController, Param, Post, Put } from 'routing-controllers'
-import { OperationInfo } from 'routing-controllers-openapi-extended';
+import { OperationInfo, ResponseEntry, Parameters } from 'routing-controllers-openapi-extended';
 
 class CreateUserBody {
   @IsString()
@@ -55,17 +66,26 @@ class CreateUserBody {
 export class UsersController {
 
   @Get('/:id')
+  @OperationInfo({ summary: '', description: '', operationId: '' })
   @OperationInfo({ summary: 'Get user by Id', description: 'Get user by Id' })
   getOne(@Param('id') id: number) {
     return { name: 'User #' + id }
   }
 
-  @Post('/')
-  createUser(@Body({ validate: true }) body: CreateUserBody) {
+  
+  @Post('/:id')
+  @Parameters([
+    { name: 'Authorization', in: 'header', type: 'string', description: 'Used to attached token', required: true, default: 'Basic <token>' },
+    { name: 'body', description: 'Detailed information about creat user body', required: true },
+    { name: 'id', description: 'Detailed information about id parameter' },
+  ])
+  @ResponseEntry({ statusCode: 200, schema: CreateUserBody, description: 'detailed information about the response', examples: { 'applications/json': { userId: '<sample data>' } } })
+  createUser(@Body() body: CreateUserBody, @Param('id') id: string) {
     return { ...body, id: 3 }
   }
 
 }
+
 
 
 // Generate a schema:
@@ -103,58 +123,68 @@ This will generate below swagger v2 specification:
   "paths": {
     "/api/users/{id}": {
       "get": {
-        "operationId": "UsersController.getOne",
+        "tags": [
+          "Users"
+        ],
         "parameters": [
           {
             "in": "path",
             "name": "id",
             "required": true,
-            "schema": {
-              "type": "number"
-            }
+            "type": "string"
           }
         ],
         "responses": {
           "200": {
-            "content": {
-              "application/json": {}
-            },
             "description": "Successful response"
           }
-        },
-        "summary": "Get user by Id",
-        "tags": [
-          "Users"
-        ],
-        "description": "Get user by Id"
-      }
-    },
-    "/api/users/": {
+        }
+      },
       "post": {
         "operationId": "UsersController.createUser",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/definitions/CreateUserBody"
-              }
-            }
-          },
-          "description": "CreateUserBody",
-          "required": false
-        },
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {}
-            },
-            "description": "Successful response"
-          }
-        },
         "summary": "Create user",
         "tags": [
           "Users"
-        ]
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "type": "string",
+            "description": "Detailed information about id parameter"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateUserBody"
+            },
+            "description": "Detailed information about creat user body"
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "type": "string",
+            "description": "Used to attached token",
+            "required": true,
+            "default": "Basic <token>"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "detailed information about the response",
+            "examples": {
+              "applications/json": {
+                "userId": "<sample data>"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/CreateUserBody"
+            }
+          }
+        }
       }
     }
   },
@@ -212,9 +242,21 @@ This is used to specify most of the basic information about each operations.
 - `produces` [`Array<string>`] - used to specify produces list
 - `security` [`any`] - allow user to define their own security specification
 
+#### Syntax
+```typescript
+{
+  summary?: string;
+  description?: string;
+  operationId?: string;
+  consumes?: Array<string>;
+  produces?: Array<string>;
+  security?: any;
+}
+```
+
 #### Example
 ```typescript
-@OperationInfo({ summary: '', description: '', operationId: '' })
+@OperationInfo({ summary: '<summary info>', description: '<detailed info>', operationId: '<unique operation id>' })
 ```
 
 ### @CustomEntry(options)
@@ -223,9 +265,16 @@ This is used to add all custom properties which may/ may not be specified in swa
 #### Available Options 
 - `<any key name>` [`any`] - entire object will be attached to the specific operation
 
+#### Syntax
+```typescript
+{
+  [key: string]: any;
+}
+```
+
 #### Example
 ```typescript
-@CustomEntry({ customField: '' })
+@CustomEntry({ customField: '<values>', 'x-status': '<status>' })
 ```
 
 ### @CodeSnippets(options)
@@ -235,15 +284,125 @@ This is another kind of custom entry which can be attached to operation sepcific
 - `lang` [`String`] - used to specify language
 - `snippet` [`String`] - used to specify sample code
 
+#### Syntax
+```typescript
+Array<{
+  lang: string;
+  snippet: string;
+}>
+```
 
 #### Example
 ```typescript
-@CodeSnippets([{ lang: '', snippet: '' }])
+@CodeSnippets([{ lang: '<language>', snippet: '<code snippet>' }])
+```
+
+### @Parameters(options)
+This is used to add additional properties to the existing parameter (including query parameter and body parameters). And allow user to attach any header parameters (like pagination, content-type etc). 
+
+#### Available Options 
+- `name` [`String`] - used to specify name
+- `in` [`String`] - used to specify type of parameter
+- `description` [`String`] - used to specify description
+- `type` [`String`] - used to data type of the parameter
+- `required` [`Boolean`] - used to required flag
+- `schema` [`Object`] - used to specify schema of the data type
+- `examples` [`Object`] - used to specify examples
+- `example` [`any`] - used to specify sample example
+- `default` [`any`] - used to specify default value 
+- `<any key name>` [`any`] - entire object will be attached to the specific operation
+
+#### Syntax
+```typescript
+{
+  name: string;
+  in?: 'query' | 'header' | 'path' | 'body' | 'cookie';
+  description?: string;
+  type?: string;
+  required?: boolean;
+  deprecated?: boolean;
+  schema?: { $ref: string };
+  examples?: {
+      [key: string]: any;
+  };
+  example?: any;
+  default?: any;
+  [key: string]: any;
+};
+
+```
+
+#### Example
+Users shall attach additinal parameters to the existing operation.
+```typescript
+@Parameters({ name: 'Authorization', in: 'header', type: 'string', description: 'Used to attached token' required: true, default: 'Basic <token>'})
+```
+User shall use the same Parameters decorator to override/ ament existing paramters. 
+> `name` value should match with the `@Param` `name` for query and path parameter entiries.
+
+> `name` value should be `body` for `@Body` type paramters.
+```typescript
+@Post('/:id')
+@Parameters([{ name: 'Authorization', in: 'header', type: 'string', description: 'Used to attached token' required: true, default: 'Basic <token>'}])
+@Parameters([
+  { name: 'body', description: 'Detailed information about creat user body', required: true }
+])
+@Parameters([
+  { name: 'id', description: 'Detailed information about id parameter'}
+])
+createUser(@Body() reqBody: CreateUserBody, @Param('id') id: string) {
+  return { ...body, id: 3 }
+}
+```
+
+### @ResponseEntry(options)s
+This is used to add `responses` entry with proper status code and samples to the operation.
+
+#### Available Options 
+- `statusCode` [`Number` or `String`] - used to specify name
+- `description` [`String`] - used to specify description
+- `type` [`String`] - used to data type of the parameter
+- `schema` [`Function` or `String`] - used to specify schema of the data type
+- `examples` [`Object`] - used to specify examples
+- `headers` [`Object`] - used to specify examples
+- `<any key name>` [`any`] - entire object will be attached to the specific operation
+
+#### Syntax
+```typescript
+{
+  statusCode: number | string,
+  description?: string;
+  type?: string;
+  schema?: Function | string,
+  examples?: {
+    [key: string]: any;
+  };
+  example?: any;
+  headers?: {
+    [name: string]: {
+      type: string;
+      description?: string;
+      [key: string]: any;
+    };
+  };
+  [key: string]: any;
+};
+
+```
+
+#### Example
+Users shall attach responses to the operation.
+```typescript
+@ResponseEntry({ statusCode: 200, schema: CreateUserBody, description: 'detailed information about the response' })
+```
+
+User shall add more information along with responses like examples, header information. Users shall add more than one responses to the operations. 
+```typescript
+@ResponseEntry({ statusCode: 200, schema: CreateUserBody, description: 'detailed information about the response', examples: { 'applications/json': { userId: '<sample data>' } } })
+@ResponseEntry({ statusCode: 404, schema: ErrorResponse, description: 'details about the error response', examples: { 'applications/json': { erros: [ { message: 'sample error message' }] } } })
 ```
 
 ## Next goals
-
-- Decorators to customize paramters
 - Support to specify schema models via API
 - Support to customize schema definitions generated from Models.
 - Implement logging to troubleshot generaiton operation
