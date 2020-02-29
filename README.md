@@ -1,5 +1,7 @@
 # routing-controllers-openapi-extended
 
+[![Build Status](https://travis-ci.com/dhineshpandiyan/routing-controllers-openapi-extended.svg?branch=master)](https://travis-ci.org/dhineshpandiyan/routing-controllers-openapi-extended)
+
 Swagger v2 and OpenAPI v3 schema generation using beautiful typescript decorators.
 
 ## Table of Contents
