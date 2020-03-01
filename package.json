@@ -1,6 +1,6 @@
 {
   "name": "routing-controllers-openapi-extended",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Runtime Swagger v2 / OpenAPI v2 specification generation for routing-controllers",
   "keywords": [
     "routing-controllers",
@@ -60,6 +60,8 @@
     "class-validator": "^0.9.0"
   },
   "files": [
-    "dist"
+    "dist",
+    "package-lock.json",
+    "package.json"
   ]
 }
