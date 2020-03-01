@@ -310,6 +310,7 @@ This is used to add additional properties to the existing parameter (including q
 - `examples` [`Object`] - used to specify examples
 - `example` [`any`] - used to specify sample example
 - `default` [`any`] - used to specify default value 
+- `format` [`any`] - used to specify format  value (like int64) 
 - `<any key name>` [`any`] - entire object will be attached to the specific operation
 
 #### Syntax
@@ -327,6 +328,7 @@ This is used to add additional properties to the existing parameter (including q
   };
   example?: any;
   default?: any;
+  format?: any;
   [key: string]: any;
 };
 
@@ -337,7 +339,7 @@ Users shall attach additinal parameters to the existing operation.
 ```typescript
 @Parameters({ name: 'Authorization', in: 'header', type: 'string', description: 'Used to attached token' required: true, default: 'Basic <token>'})
 ```
-User shall use the same Parameters decorator to override/ ament existing paramters. 
+User shall use the same Parameters decorator to override/ amend existing paramters. 
 > `name` value should match with the `@Param` `name` for query and path parameter entiries.
 
 > `name` value should be `body` for `@Body` type paramters.
@@ -355,7 +357,7 @@ createUser(@Body() reqBody: CreateUserBody, @Param('id') id: string) {
 }
 ```
 
-### @ResponseEntry(options)s
+### @ResponseEntry(options)
 This is used to add `responses` entry with proper status code and samples to the operation.
 
 #### Available Options 
