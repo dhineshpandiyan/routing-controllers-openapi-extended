@@ -14,9 +14,9 @@ export function CustomEntry(options: CustomEntryOptions): Function {
 	};
 };
 
-export function Model(options: ModelOptions): Function {
+export function Model(options: ModelOptions = { enabled: true }): Function {
 	return function (object: Object) {
-		getStorage().models.push({ target: object.constructor, options });
+		getStorage().models.push({ target: object, options });
 	};
 };
 
@@ -32,8 +32,13 @@ export function Parameters(options: Array<ParametersOptions>): Function {
 	};
 };
 
-export function Property(options: Array<PropertyOptions>): Function {
+export function Property(options: PropertyOptions = {}): Function {
 	return function (object: Object, method: string) {
+		options = Object.assign({}, {
+			name: method,
+			required: true,
+			type: Reflect.getMetadata('design:type', object, method),
+		}, options);
 		getStorage().properties.push({ target: object.constructor, method, options });
 	};
 };

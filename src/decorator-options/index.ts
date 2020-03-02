@@ -8,7 +8,7 @@ export interface CustomEntryOptions {
 };
 
 export interface ModelOptions {
-	enabled?: boolean,
+	enabled: boolean,
 };
 
 export interface OperationInfoOptions {
@@ -38,10 +38,10 @@ export interface ParametersOptions {
 };
 
 export interface PropertyOptions {
-	type?: Function | string;
+	type?: Function;
 	description?: string;
 	name?: string;
-	itemType?: Function | string;
+	itemType?: Function;
 	required?: boolean;
 	example?: any;
 	[key: string]: any;

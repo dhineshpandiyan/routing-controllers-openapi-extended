@@ -1,6 +1,6 @@
 {
   "name": "routing-controllers-openapi-extended",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Runtime Swagger v2 / OpenAPI v2 specification generation for routing-controllers",
   "keywords": [
     "routing-controllers",

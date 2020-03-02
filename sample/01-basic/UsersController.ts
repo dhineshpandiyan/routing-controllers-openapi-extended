@@ -1,13 +1,16 @@
 import { IsOptional, IsString, MaxLength } from 'class-validator'
 import { Body, Get, JsonController, Param, Post, Put } from 'routing-controllers'
-import { OperationInfo, ResponseEntry, Parameters } from 'routing-controllers-openapi-extended';
+import { OperationInfo, ResponseEntry, Parameters, Model, Property } from 'routing-controllers-openapi-extended';
 
-class CreateUserBody {
+@Model()
+export class CreateUserBody {
   @IsString()
+  @Property()
   name: string
 
   @IsOptional()
   @MaxLength(20, { each: true })
+  @Property({ itemType: Boolean })
   hobbies: string[]
 
 }

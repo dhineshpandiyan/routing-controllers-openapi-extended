@@ -2,7 +2,7 @@ import { CodeSnippetOptions, CustomEntryOptions, ModelOptions, OperationInfoOpti
 	ParametersOptions, PropertyOptions, ResponseEntryOptions } from "../decorator-options";
 
 interface ClassBaseArgs {
-	target: Function;
+	target: object;
 };
 
 interface MethodBaseArgs {
@@ -31,7 +31,7 @@ export interface ParametersArgs extends MethodBaseArgs {
 };
 
 export interface PropertyArgs extends MethodBaseArgs {
-	options: Array<PropertyOptions>;
+	options: PropertyOptions;
 };
 
 export interface ResponseEntryArgs extends MethodBaseArgs {

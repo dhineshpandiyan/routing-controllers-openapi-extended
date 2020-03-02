@@ -6,14 +6,6 @@ import { ResponseEntryOptions } from '../decorator-options';
 import { resolveSchema } from './common';
 
 const TRANSFORM_REQUIRED_PROPERTIES = new Set(['statusCode', 'schema']); 
-// function getContentType(route: Route): string {
-//     const defaultContentType =
-//       route.controller.type === 'json'
-//         ? 'application/json'
-//         : 'text/html; charset=utf-8'
-//     const contentMeta = _.find(route.responseHandlers, { type: 'content-type' })
-//     return contentMeta ? contentMeta.value : defaultContentType
-// }
 
 function parseResponseEntry(response: ResponseEntryOptions): any {
     const responseObject = Object.keys(response).reduce((acc, key) => {

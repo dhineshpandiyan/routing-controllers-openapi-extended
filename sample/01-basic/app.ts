@@ -7,7 +7,7 @@ import {
 } from 'routing-controllers'
 import { generateSwagger } from 'routing-controllers-openapi-extended'
 
-import { UsersController } from './UsersController'
+import { UsersController, CreateUserBody } from './UsersController'
 
 const routingControllersOptions = {
   controllers: [UsersController],
@@ -17,7 +17,7 @@ const app: Express = createExpressServer(routingControllersOptions)
 
 const metadatas = (getFromContainer(MetadataStorage) as any).validationMetadatas
 const storage = getMetadataArgsStorage()
-const spec = generateSwagger(storage, routingControllersOptions, metadatas, {
+const spec = generateSwagger(storage, { routePrefix: '/api' }, [CreateUserBody], {
   components: {
     securitySchemes: {
       basicAuth: {

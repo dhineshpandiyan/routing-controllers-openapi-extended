@@ -5,8 +5,10 @@ import { generateSwagger } from 'routing-controllers-openapi-extended'
 
 import { UsersController } from './UsersController'
 
+console.log(UsersController);
+
 const routingControllersOptions = {
-  controllers: [UsersController],
+  // controllers: [UsersController],
   routePrefix: '/api'
 }
 const metadatas = (getFromContainer(MetadataStorage) as any).validationMetadatas
