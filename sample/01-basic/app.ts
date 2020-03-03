@@ -1,5 +1,4 @@
 import 'reflect-metadata'
-import { getFromContainer, MetadataStorage } from 'class-validator' // tslint:disable-line
 import { Express } from 'express'
 import {
   createExpressServer,
@@ -9,15 +8,17 @@ import { generateSwagger } from 'routing-controllers-openapi-extended'
 
 import { UsersController, CreateUserBody } from './UsersController'
 
-const routingControllersOptions = {
+const app: Express = createExpressServer({
   controllers: [UsersController],
   routePrefix: '/api'
-}
-const app: Express = createExpressServer(routingControllersOptions)
+})
 
-const metadatas = (getFromContainer(MetadataStorage) as any).validationMetadatas
-const storage = getMetadataArgsStorage()
-const spec = generateSwagger(storage, { routePrefix: '/api' }, [CreateUserBody], {
+const config = {
+  controllers: [UsersController],
+  models: [CreateUserBody],
+  storage: getMetadataArgsStorage(),
+};
+const spec = generateSwagger(config, {
   components: {
     securitySchemes: {
       basicAuth: {
